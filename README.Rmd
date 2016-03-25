@@ -1,0 +1,20 @@
+---
+title: "README"
+output: html_document
+---
+### Rqbase
+
+The purpose of this package is to an interface to Quickbase which should allow analyst and researchers to use Quickbase as a frontend data capture tool and R as the analysis tool:
+ - Quickbase is easy to use for anyone who does not have SQL or database design knowledge.
+ - Quickbase provides a cross platform alternative to excel.
+ - Quickbase can have many users all writing to the same tables.
+ 
+ This make quickbase ideal for small companies who do not have resources for SQL developers to build custom data warehouses. For anyone interested in a non-commercial data capture tool to use in research the REDCap project is a good solution.
+ 
+Rqbase currently supports 3 request to quickbase. A
+- API_Authenticate
+- API_DoQuery
+- API_GrantedDBs
+
+
+For anyone interested in contributing visit the official quickbase documentation <https://www.quickbase.com/api-guide/index.html> I will be more than willing to review any pull request for regarding issues, bugs, or improvements.
