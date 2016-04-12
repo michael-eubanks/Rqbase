@@ -20,7 +20,7 @@ qb_do_query <- function(URL, db_id, qb_ticket_id, app_token) {
           db_id,
           api_action,
           qb_ticket_id,
-          app_token)
+          api_token)
   )
   pg1
 }
