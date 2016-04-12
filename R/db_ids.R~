@@ -29,7 +29,7 @@ db_ids <- function(URL, qb_ticket_id)  {
   
   ls_dbs <- 
     lapply(ls_dbs, function(x) {
-      dfs <- as.data.frame(x[1:2], stringsAsFactors = FALSE)
+      dfs <- as.data.frame(x[1:2])
       dfs
     })
   
