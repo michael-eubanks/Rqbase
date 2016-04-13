@@ -36,6 +36,10 @@ db_ids <- function(URL, qb_ticket_id)  {
   ls_dbs <- 
     do.call(rbind, 
             ls_dbs)
+
+  #ls_dbs <- as.data.frame(ls_dbs, stringsAsFactors = FALSE)
+
+# ls_dbs <- as.data.frame(apply(ls_dbs, FUN = as.character, MARGIN = 2), stringAsFactors = FALSE)
   return(ls_dbs)
   
             }
