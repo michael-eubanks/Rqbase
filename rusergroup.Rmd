@@ -1,0 +1,139 @@
+---
+title: "Rqbase"
+author: "Michael Eubanks"
+date: "April 28, 2016"
+output: slidy_presentation
+---
+
+## Goal and Purpose
+- Use an example to demonstrate on how package creation can faciliate an efficient programming work flow
+- Pack scripts into functions which can be easily used in other scripts and analysis
+- Stand on the shoulders of giants.
+
+## Quickbase use cases
+
+- Data capture tool
+- Can easily scale to multiple users editing the same data: replace excel for data capture
+- Low cost alternative to hiring Database administrator for small companies
+- Redcap?
+
+## Quickbase limitations
+
+- Users create the applications
+- Users create data validation and integrity rules
+- Returns data in an XML format through the API
+- Expensive with large data sets
+
+## Installation
+```{r eval=FALSE, warning=FALSE}
+library(devtools)
+install_github("mre011/Rqbase", force = TRUE)
+```
+
+## Quickbase User setup
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(XML)
+library(httr)
+
+library(dplyr)
+library(tidyr)
+```
+Free Trial Account
+```{r, warning=FALSE}
+library(Rqbase)
+
+URL <- "https://visresolutions.quickbase.com/"
+username <- "meubanks@visresolutions.com"
+password <- "rusergroup11"
+qb_app_token <- "df7d5tacdupjsycqyjuww27z29f"
+```
+
+## Create a handle to send an authentication ticket request
+```{r warning=FALSE, message=FALSE}
+print(auth_ticket_handle)
+
+```
+
+```{r warning=FALSE, message=FALSE}
+ticket_handle <-
+  auth_ticket_handle(URL = URL,
+                     username = username,
+                     password = password)
+ticket_handle
+```
+
+## Get an authentication ticket with handle
+```{r warning=FALSE, message=FALSE}
+auth_ticket
+
+my_ticket <-
+auth_ticket(ticket_handle)
+
+auth_ticket_handle(URL = URL,
+                   username = username,
+                   password = password) %>%
+  auth_ticket()
+
+```
+
+## Retrieve list of db_ids
+
+```{r warning=FALSE, message=FALSE}
+my_dbs <- db_ids(URL = URL, qb_ticket_id = my_ticket)
+my_dbs
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+my_dbs <- 
+  separate(my_dbs, col = dbname, into = "dbname", sep = ":")
+```
+
+```{r warning=FALSE, message=FALSE}
+my_dbs_ls <- my_dbs$dbid
+names(my_dbs_ls) <- my_dbs$dbname
+my_dbs_ls
+```
+
+## Get quickbase app data into R
+```{r warning=FALSE, message=FALSE}
+my_dbs_ls[1]
+qb_app_token
+iris_response <- qb_do_query(URL = URL,
+            qb_ticket_id = my_ticket,
+            db_id = my_dbs_ls[2],
+            app_token = qb_app_token)
+```
+
+## Return many tables
+```{r warning=FALSE, message=FALSE}
+
+lapply(my_dbs_ls, qb_do_query, 
+       URL = URL,
+       qb_ticket_id = my_ticket, 
+       app_token = qb_app_token)
+```
+
+## Parse html response and convert content to a dataframe
+```{r warning=FALSE, message=FALSE}
+qb_parse(iris_response) %>%
+  head()
+
+```
+
+## Return all apps with functional
+```{r warning=FALSE, message=FALSE}
+lapply(my_dbs_ls, function(x) {
+  qb_do_query(db_id = x, 
+       URL = URL,
+       qb_ticket_id = my_ticket, 
+       app_token = qb_app_token) %>%
+    qb_parse() %>%
+    str()
+}) 
+```
+
+## Future Developments:
+- POST request to create new apps from dataframes in R
+- Modify existing apps
+- Monitor and add users
+- Automate everything
