@@ -33,12 +33,9 @@ qb_do_query <- function(URL, db_id, qb_ticket_id, app_token) {
 #' @export
 
 qb_parse <- function(html_qb_db) {
-  content1 <- 
-    content(html_qb_db, "text")
+  content1 <- content(html_qb_db, "text")
   qb_parsed_ls <- xmlToList(content1)
-  
-  my_records <-
-    names(qb_parsed_ls) == "record"
+  my_records <- names(qb_parsed_ls) == "record"
   qb_parsed_ls  <- qb_parsed_ls[my_records]
   
   qb_df <- 
@@ -48,4 +45,30 @@ qb_parse <- function(html_qb_db) {
   qb_df[] <- 
     apply(qb_df, FUN = as.character, MARGIN = 2)
   qb_df
+}
+
+#' qb_to_df
+#'
+#' @param html_qb_db 
+#' @param record_name 
+#' @export
+qb_to_df <- function(html_qb_db, record_name = "record") {
+  html_content <- content(html_qb_db, "parsed")
+  
+  doc <- xmlParse(html_content)
+  #### get the records for that form
+  nodeset <- getNodeSet(doc, paste0("//", record_name))
+  
+  var.names <- map(nodeset, names)
+  
+  fields <- flatten(var.names) %>% unique()
+  
+  df = map(fields, function(x) {
+    xpathSApply(doc, paste0(paste0("//", record_name), "/", x), xmlValue)
+  }) %>% invoke(.f = cbind) %>% as.data.frame(stringsAsFactors = FALSE)
+  
+  names(df) <- fields
+  
+  return(df)
+  
 }

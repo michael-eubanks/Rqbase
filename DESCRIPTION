@@ -5,9 +5,9 @@ Authors@R: person("First", "Last", email = "first.last@example.com", role = c("a
 Description: What the package does (one paragraph).
 Depends:
     R (>= 3.2.3)
-Imports: 
-  httr,
-  XML
+Imports:
+    httr,
+    XML
 License: What license is it under?
 LazyData: true
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1
